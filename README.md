@@ -5,7 +5,7 @@ This app uses an API called Timeline Weather API by Visual Crossing. So in order
 
 ## Preparation for VisualCross API
 1. Create a file named ".env" located in the root of the project
-2. Your .env file should have only this lane: MY_API_KEY = Your_personal_api_key
+2. Your .env file should have only this line: MY_API_KEY = Your_personal_api_key
 
 ## Get started
 
