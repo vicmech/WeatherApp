@@ -1,6 +1,11 @@
 # Welcome to your Expo app 👋
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This app uses an API called Timeline Weather API by Visual Crossing. So in order to use this app you need to get an API Key here (https://www.visualcrossing.com/). The next step is to create an .env file where you'll put your own API Key.
+
+## Preparation for VisualCross API
+1. Create a file named ".env" located in the root of the project
+2. Your .env file should have only this lane: MY_API_KEY = Your_personal_api_key
 
 ## Get started
 
