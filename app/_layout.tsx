@@ -1,24 +1,35 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import 'react-native-reanimated';
-
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { LocationContext } from "@/context/LocationContext";
+import { useGeolocation } from "@/hooks/useGeolocation";
+import useReverseGeocoding from "@/hooks/useReverseGeocoding";
+import { FilteredData, useWeatherAPI } from "@/hooks/useWeatherAPI";
+import { Stack } from "expo-router";
+import { useEffect, useState } from "react";
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
+      const GeolocationCoordinates = useGeolocation(); //Get the initial location of the user
+      const [coordinates, setCoordinates] = useState<{lat : number, lon : number} | null>(null); //This is for allocate current location's coordinates
+      const weatherData : FilteredData | null =  useWeatherAPI({lat : coordinates?.lat, lon : coordinates?.lon});
+      const realTimeLocation = useReverseGeocoding(coordinates); //Is a reverse Geolocation
+      const [selectedLocation, setSelectedLocation] = useState<string>('Loading...');
+  
+      useEffect(()=>{       
+        //If the Geolocation went good, the coordinates are established
+          if(GeolocationCoordinates){
+            setCoordinates(GeolocationCoordinates);
+          }
+      },[GeolocationCoordinates]);
 
-  return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+      useEffect(()=>{
+        //When a new set of coordinates are established, the real time location name is updated
+        setSelectedLocation(realTimeLocation);
+      }, [realTimeLocation])
+      
+    return (
+      <LocationContext.Provider value={{coordinates, selectedLocation, weatherData, setCoordinates, setSelectedLocation }}>
+        <Stack>
+          <Stack.Screen name="index" options={{ headerShown: false }} />
+          <Stack.Screen name="SearchOverlay" options={{ headerShown: false, presentation : "modal" }} />
+        </Stack>
+      </LocationContext.Provider>
   );
 }
